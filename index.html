@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Blog Articles</title>
+    <style>
+        /* PLAYFUL & CLEAN AESTHETIC */
+        :root {
+            --bg-color: #f1f3f5;
+            --card-bg: #ffffff;
+            --text-main: #343a40;
+            --text-muted: #868e96;
+            --border-color: #adb5bd;
+            --shadow-color: #dee2e6;
+            --accent: #495057;
+        }
+
+        body {
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: var(--bg-color);
+            background-image: radial-gradient(var(--shadow-color) 1px, transparent 1px);
+            background-size: 20px 20px; 
+            color: var(--text-main);
+            margin: 0;
+            padding: 50px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .header { 
+            text-align: center; 
+            margin-bottom: 50px; 
+            background: var(--card-bg);
+            padding: 20px 40px;
+            border: 2px solid var(--border-color);
+            border-radius: 50px 15px 40px 10px; 
+            box-shadow: 6px 6px 0px var(--shadow-color);
+            transform: rotate(-1deg);
+        }
+
+        .header h1 { 
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 32px; 
+            font-weight: 800; 
+            text-transform: uppercase;
+            letter-spacing: 2px; 
+            margin: 0 0 5px 0; 
+            color: var(--text-main);
+        }
+
+        .header p { 
+            font-size: 15px; 
+            margin: 0; 
+            color: var(--accent);
+            font-weight: bold;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1000px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .article-card {
+            background: var(--card-bg);
+            border: 2px solid var(--border-color);
+            border-radius: 20px 5px 25px 8px; 
+            padding: 25px;
+            text-decoration: none;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 6px 6px 0px var(--shadow-color);
+            transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+            position: relative;
+        }
+
+        .article-card:nth-child(odd):hover {
+            transform: translate(-4px, -4px) rotate(-2deg);
+            box-shadow: 10px 10px 0px var(--border-color);
+        }
+
+        .article-card:nth-child(even):hover {
+            transform: translate(-4px, -4px) rotate(2.deg);
+            box-shadow: 10px 10px 0px var(--border-color);
+            border-radius: 8px 25px 5px 20px; 
+        }
+
+        .blog-name {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            display: inline-block;
+            border-bottom: 2px dashed var(--shadow-color);
+            padding-bottom: 4px;
+        }
+
+        .article-title {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .loading-wrapper {
+            grid-column: 1 / -1; 
+            text-align: center; 
+            padding: 60px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid var(--shadow-color);
+            border-top: 4px solid var(--text-main);
+            border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+            animation: wobbly-spin 1.5s linear infinite;
+        }
+
+        @keyframes wobbly-spin {
+            0% { transform: rotate(0deg); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+            50% { border-radius: 70% 30% 30% 70% / 70% 70% 30% 30%; }
+            100% { transform: rotate(360deg); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; }
+        }
+
+        .loading-text {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-weight: bold;
+            color: var(--text-muted);
+            animation: pulse 1s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.5; transform: scale(0.95); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .btn-refresh {
+            margin-top: 50px;
+            padding: 15px 35px;
+            background: var(--text-main);
+            color: var(--card-bg);
+            border: 2px solid var(--text-main);
+            border-radius: 10px 30px 10px 30px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: bold;
+            font-family: 'Courier New', Courier, monospace;
+            text-transform: uppercase;
+            box-shadow: 5px 5px 0px var(--shadow-color);
+            transition: all 0.2s;
+        }
+
+        .btn-refresh:hover { 
+            background: var(--card-bg); 
+            color: var(--text-main);
+            transform: translate(-2px, -2px);
+            box-shadow: 7px 7px 0px var(--border-color);
+            border-radius: 30px 10px 30px 10px;
+        }
+
+        .error-text {
+            color: #d63031;
+            font-weight: bold;
+            font-family: 'Segoe UI', sans-serif;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Random Articles</h1>
+        <p>Discover random posts from various blogs.</p>
+    </div>
+    
+    <div class="container" id="articles-container"></div>
+    
+    <button class="btn-refresh" onclick="fetchArticles()">Load New Articles</button>
+
+    <script>
+        // Replace with your actual Vercel deployment URL
+        const VERCEL_API_URL = 'https://blogpot-list.vercel.app/api/random'; 
+
+        async function fetchArticles() {
+            const container = document.getElementById('articles-container');
+            
+            container.innerHTML = `
+                <div class="loading-wrapper">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Fetching random articles...</div>
+                </div>
+            `;
+            
+            try {
+                const res = await fetch(VERCEL_API_URL);
+                const data = await res.json();
+                
+                if (data.error) throw new Error(data.error);
+                
+                container.innerHTML = '';
+                if(!data.posts || data.posts.length === 0) {
+                    return container.innerHTML = `
+                        <div class="loading-wrapper">
+                            <div class="error-text">No articles found at the moment. Please try again.</div>
+                        </div>`;
+                }
+
+                data.posts.forEach(post => {
+                    const card = document.createElement('a');
+                    card.href = post.link;
+                    card.target = '_blank';
+                    card.className = 'article-card';
+                    card.innerHTML = `
+                        <div class="blog-name">${post.blogName}</div>
+                        <h3 class="article-title">${post.title}</h3>
+                    `;
+                    container.appendChild(card);
+                });
+            } catch (err) {
+                container.innerHTML = `
+                    <div class="loading-wrapper">
+                        <div class="error-text">Error fetching articles: ${err.message}</div>
+                    </div>`;
+            }
+        }
+        
+        fetchArticles();
+    </script>
+</body>
+</html>
